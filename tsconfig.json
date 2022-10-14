@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "allowJs": true,
+        "strict": true,
+        "outDir": "dist",
+        "checkJs": true,
+        
+    },
+}
