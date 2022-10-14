@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS `product`;
+
 CREATE TABLE IF NOT EXISTS `product`.`entity_attribute_value` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `entity_id` BIGINT NOT NULL,
@@ -17,8 +19,8 @@ CREATE TABLE IF NOT EXISTS `product`.`entity_attribute_value` (
     `value_bigint_unsigned` BIGINT UNSIGNED DEFAULT NULL,
     `value_timestamp` TIMESTAMP DEFAULT NULL,
     `value_string` VARCHAR(256) DEFAULT NULL,
-    `value_text` VARCHAR(21845) DEFAULT NULL,
+    `value_text` VARCHAR(1024) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `entity_id_attribute_id` (`entity_id`, `attribute_id`),
-    INDEX KEY `eav_entity_id` (`entity_id`)
+    KEY `entity_id` (`entity_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

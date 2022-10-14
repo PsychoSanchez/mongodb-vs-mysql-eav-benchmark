@@ -18,6 +18,7 @@ async function run() {
 
         const database = client.db('product');
         const collection = database.collection('product');
+        await collection.createIndex({ product_id: 1 }, { unique: true });
 
         // this option prevents additional documents from being inserted if one fails
         const options = { ordered: true };
