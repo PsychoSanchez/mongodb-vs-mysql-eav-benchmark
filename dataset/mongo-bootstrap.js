@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const lodash = require('lodash');
 
-const { createDataset } = require('../dataset/index.js');
+const { createDataset } = require('./index.js');
 
 const uri = 'mongodb://localhost:27017';
 

@@ -1,8 +1,25 @@
 const path = require("path");
+const fs = require("fs");
 const { fork } = require("child_process");
 const { program } = require("commander");
 const autocannon = require("autocannon");
 
+const { waitForServerMessage } = require("./messages");
+
+
+const TESTS = [{
+    name: "balanced",
+    connections: 10,
+    duration: 30
+}, {
+    name: "high",
+    connections: 50,
+    duration: 20
+}, {
+    name: "spike",
+    connections: 100,
+    duration: 10
+}];
 
 /**
  * @param {string} url
@@ -28,52 +45,46 @@ async function fire(url, connections, duration) {
     return instance;
 }
 
-function runServerWithMongo() {
-    return fork(path.join(__dirname, "mongo", "server.js"));
+/**
+ * @param {'mysql-eav' | 'mysql-blob' | 'mongo'} type
+ */
+function runServer(type) {
+    return fork(path.join(__dirname, type, "server.js"));
 }
 
-function runServerWithMySql() {
-    return fork(path.join(__dirname, "mysql", "server.js"));
-}
 
 /**
- * @param {string} type
+ * @param {'mysql-eav' | 'mysql-blob' | 'mongo'} type
  */
 async function runBenchmark(type) {
     console.log(`Running benchmark for ${type}...`);
 
     console.log("Starting server...");
-    const server = type === "mongo" ? runServerWithMongo() : runServerWithMySql();
-
-    await new Promise((resolve) => {
-        server.on("message", (message) => {
-            if (message === "ready") {
-                resolve();
-            }
-        });
-    });
+    const server = runServer(type);
+    await waitForServerMessage(server);
 
     console.log("Starting benchmark...");
 
-    const tests = [{
-        connections: 10,
-        duration: 30
-    }, {
-        connections: 50,
-        duration: 20
-    }, {
-        connections: 100,
-        duration: 10
-    }];
-
     const url = `http://localhost:3000/product`;
-    for (const test of tests) {
+    const results = {
+        name: type,
+        ...TESTS.reduce((acc, test) => {
+            acc[test.name] = [];
+            return acc;
+        }, {})
+    };
+
+    for (const test of TESTS) {
         const { connections, duration } = test;
         console.log(`Connections: ${connections}, Duration: ${duration}s`);
         const instance = await fire(url, connections, duration);
+
+        results[test.name].push(instance);
     }
 
     server.kill("SIGINT");
+
+    saveResults(type, results);
     process.exit(0);
 }
 
@@ -83,9 +94,19 @@ program
     .action(() => runBenchmark("mongo"));
 
 program
-    .command("mysql")
+    .command("mysql-eav")
     .description("Benchmark mysql")
-    .action(() => runBenchmark("mysql"));
+    .action(() => runBenchmark("mysql-eav"));
+
+program
+    .command("mysql-blob")
+    .description("Benchmark mysql")
+    .action(() => runBenchmark("mysql-blob"));
+
 
 program.parse(process.argv);
+
+function saveResults(type, results) {
+    fs.writeFileSync(path.join(__dirname, "results", `${type}.json`), JSON.stringify(results, null, 4));
+}
 

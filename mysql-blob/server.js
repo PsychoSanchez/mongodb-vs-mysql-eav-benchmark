@@ -1,22 +1,15 @@
 const { fastify } = require('fastify');
 
-const mysql = require('mysql2/promise');
 const { faker } = require('@faker-js/faker');
-
-const connection = mysql.createPool({
-    host: 'localhost',
-    user: 'admin',
-    password: 'admin',
-    database: 'product',
-    waitForConnections: true,
-    connectionLimit: 15
-});
+const { getPool } = require('../client/mysql');
 
 faker.seed(123);
 
 async function run() {
     try {
         const app = fastify({ logger: false });
+
+        const connection = await getPool(3307)
 
         app.get('/product', async (request, reply) => {
             const productId = faker.datatype.number({ min: 1, max: 100000 });
@@ -25,14 +18,11 @@ async function run() {
                 SELECT * FROM entity_attribute_value WHERE entity_id = ?;
             `, [productId]);
 
-            return rows.reduce((acc, row) => {
-                const { entity_id, attribute_id, type, value_boolean, value_int, value_float, value_bigint_unsigned, value_timestamp, value_string, value_text } = row;
+            if (!rows[0]) {
+                throw new Error('not found');
+            }
 
-                acc[attribute_id] = value_boolean || value_int || value_float || value_bigint_unsigned || value_timestamp || value_string || value_text;
-
-                return acc;
-            }, {});
-
+            return rows[0].value;
         });
 
         app.listen({ port: 3000 }, (err, address) => {
@@ -45,7 +35,7 @@ async function run() {
     } catch (err) {
         throw err;
     } finally {
-        process.send("ready");
+        process.send?.("ready");
     }
 }
 

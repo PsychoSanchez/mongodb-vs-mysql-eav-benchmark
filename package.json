@@ -1,22 +1,25 @@
 {
-  "name": "mongodb-vs-mysql-eav-benchmark",
+  "name": "mongodb-vs-mysql-eav-eav-benchmark",
   "version": "1.0.0",
-  "description": "MongoDb vs MySQL Entity Attribute Value table model benchmark",
+  "description": "MongoDb vs mysql-eav Entity Attribute Value table model benchmark",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "stop:mongo": "docker-compose -f ./mongo/docker-compose.yaml down",
     "start:mongo": "docker-compose -f ./mongo/docker-compose.yaml up -d",
-    "init:mongo": "node ./mongo/bootstrap.js",
-    "stop:mysql": "docker-compose -f ./mysql/docker-compose.yaml down",
-    "start:mysql": "docker-compose -f ./mysql/docker-compose.yaml up -d",
-    "init:mysql": "node ./mysql/bootstrap.js",
-    "stop:all": "npm run stop:mysql && npm run stop:mongo",
+    "init:mongo": "node ./dataset/mongo-bootstrap.js",
+    "stop:mysql-eav": "docker-compose -f ./mysql-eav/docker-compose.yaml down",
+    "start:mysql-eav": "docker-compose -f ./mysql-eav/docker-compose.yaml up -d",
+    "init:mysql-eav": "node ./dataset/mysql-eav-bootstrap.js",
+    "stop:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml down",
+    "start:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml up -d",
+    "init:mysql-blob": "node ./dataset/mysql-blob-bootstrap.js",
+    "stop:all": "npm run stop:mysql-eav && npm run stop:mongo",
     "benchmark": "node ./benchmark.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-benchmark.git"
+    "url": "git+https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-eav-benchmark.git"
   },
   "keywords": [
     "benchmark"
@@ -24,21 +27,23 @@
   "author": "Aleksandr Aronov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-benchmark/issues"
+    "url": "https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-eav-benchmark/issues"
   },
-  "homepage": "https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-benchmark#readme",
+  "homepage": "https://github.com/PsychoSanchez/mongodb-vs-mysql-eav-eav-benchmark#readme",
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "@types/autocannon": "^7.9.0",
+    "@types/ejs": "^3.1.1",
     "@types/lodash": "^4.14.186",
-    "@types/mysql": "^2.15.21",
+    "@types/mysql-eav": "^2.15.21",
     "autocannon": "^7.10.0",
     "child_process": "^1.0.2",
     "commander": "^9.4.1",
+    "ejs": "^3.1.8",
     "fastify": "^4.8.1",
     "lodash": "^4.17.21",
     "mongodb": "^4.10.0",
-    "mysql2": "^2.3.3",
+    "mysql-eav2": "^2.3.3",
     "sequelize": "^6.25.1"
   }
 }

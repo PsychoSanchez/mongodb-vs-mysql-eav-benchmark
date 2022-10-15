@@ -1,4 +1,4 @@
-const { createDataset } = require('../dataset/index.js');
+const { createDataset } = require('./index.js');
 const lodash = require('lodash');
 const sequelize = require('sequelize');
 

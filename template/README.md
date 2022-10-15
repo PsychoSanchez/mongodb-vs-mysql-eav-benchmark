@@ -28,8 +28,7 @@ Install docker and docker-compose.
 | Database | Time |
 | -------- | ---- |
 | MongoDB  | 21.4s |
-| MySQL EAV | 183.4s |
-| MySQL Blob | 23.1s |
+| MySQL    | 183.4s |
 
 <!-- table -->
 
