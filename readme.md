@@ -23,7 +23,12 @@ Install docker and docker-compose.
 
 ## Results
 
-<!-- table -->
+### Database initialization with 100000 entities and 100 attributes each using bulk insert
+
+| Database | Time |
+| -------- | ---- |
+| MongoDB  | 🏆 21.4s |
+| MySQL    | 183.4s |
 
 ### 10 connections over 30 seconds (Balanced load)
 
@@ -53,7 +58,6 @@ Install docker and docker-compose.
 | Total Requests | 🏆 55K | 8K |
 
 <!-- tablestop -->
-
 
 # Conclusion
 

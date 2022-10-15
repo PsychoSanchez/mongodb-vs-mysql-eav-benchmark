@@ -19,7 +19,6 @@ async function run() {
         const connection = await client.connect();
         const database = connection.db('product');
         const collection = database.collection('product');
-        await collection.createIndex({ product_id: 1 }, { unique: true });
 
         app.get('/product', async (request, reply) => {
             const productId = faker.datatype.number({ min: 1, max: 100000 });
