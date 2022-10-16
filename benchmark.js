@@ -107,6 +107,11 @@ program
 program.parse(process.argv);
 
 function saveResults(type, results) {
+    const resultsFolder = path.join(__dirname, "results");
+    if (!fs.existsSync(resultsFolder)) {
+        fs.mkdirSync(resultsFolder);
+    }
+
     fs.writeFileSync(path.join(__dirname, "results", `${type}.json`), JSON.stringify(results, null, 4));
 }
 
