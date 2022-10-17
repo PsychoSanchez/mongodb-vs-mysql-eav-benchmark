@@ -14,7 +14,7 @@
     "stop:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml down",
     "start:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml up -d",
     "init:mysql-blob": "node ./dataset/mysql-blob-bootstrap.js",
-    "stop:all": "npm run stop:mysql-eav && npm run stop:mongo",
+    "stop:all": "npm run stop:mysql-eav && npm run stop:mongo && npm run stop:mysql-blob",
     "benchmark": "node ./benchmark.js"
   },
   "repository": {

@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS `product`;
 
-CREATE TABLE IF NOT EXISTS `product`.`entity_blob` (
+CREATE TABLE IF NOT EXISTS `product`.`entity_attribute_value` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `entity_id` BIGINT NOT NULL,
     `value` JSON NOT NULL,
