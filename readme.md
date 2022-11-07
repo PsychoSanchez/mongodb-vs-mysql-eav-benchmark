@@ -10,12 +10,13 @@ Test runs autoncannon requests from 100 connections over 30 seconds on a 2022 Ma
 
 ## Setup
 
-Install docker and docker-compose.
+- Install docker and docker-compose.
+- Install nodejs dependencies: `nvm use && npm install`
 
--   Install nodejs dependencies: `nvm use && npm install`
--   Start benchmark `npm start`
--   Select benchmarks to run via interactive shell
--   Update README.md with results by running `npm run update-readme`
+## Run
+
+-   Start benchmark with `npm start`
+-   Update README.md by running `npm run update-readme`
 
 ## Results
 
@@ -24,9 +25,9 @@ Install docker and docker-compose.
 
 | Subject | Time |
 | --- | --- |
-| MongoDB 🏆 | 21.6s |
-| MySQL JSON | 25.5s |
-| MySQL EAV | 3m |
+| MongoDB 🏆 | 21.7s |
+| MySQL JSON | 24.8s |
+| MySQL EAV | 3m 1.5s |
 
 
 ### Benchmarks
@@ -36,91 +37,91 @@ Install docker and docker-compose.
 
 
 
-### Get random by ID (full document)
-
-#### 10 connections over 30 seconds
-| Stat | MongoDB | MySQL JSON 🏆 | 
-| --- | --- | --- |
-| Latency | 2ms | 2ms |
-| Req/Sec | 3784 | 4952 |
-| Bytes/Sec | 7.53 | 9.69 |
-| Total Requests | 113K | 149K |
-| Errors count | 0 | 0 |
-
-#### 50 connections over 20 seconds
-| Stat | MongoDB | MySQL JSON 🏆 | 
-| --- | --- | --- |
-| Latency | 9ms | 8ms |
-| Req/Sec | 5318 | 6236 |
-| Bytes/Sec | 10.58 | 12.21 |
-| Total Requests | 106K | 125K |
-| Errors count | 0 | 0 |
-
-#### 100 connections over 10 seconds
-| Stat | MongoDB | MySQL JSON 🏆 | 
-| --- | --- | --- |
-| Latency | 18ms | 15ms |
-| Req/Sec | 5390 | 6270 |
-| Bytes/Sec | 10.72 | 12.27 |
-| Total Requests | 54K | 69K |
-| Errors count | 0 | 0 |
-
-### Get random by ID (bulk)
-
-#### 10 connections over 30 seconds
-| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
-| --- | --- | --- | --- |
-| Latency | 2ms | 4ms | 803ms |
-| Req/Sec | 4331 | 4855 | 12 |
-| Bytes/Sec | 0.71 | 1.50 | 2.17 |
-| Total Requests | 130K | 146K | 0K |
-| Errors count | 0 | 145655 | 0 |
-
-#### 50 connections over 20 seconds
-| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
-| --- | --- | --- | --- |
-| Latency | 8ms | 9ms | 3.4s |
-| Req/Sec | 6229 | 5452 | 13 |
-| Bytes/Sec | 1.02 | 1.69 | 2.37 |
-| Total Requests | 125K | 109K | 0K |
-| Errors count | 0 | 109033 | 0 |
-
-#### 100 connections over 10 seconds
-| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
-| --- | --- | --- | --- |
-| Latency | 15ms | 18ms | 5.3s |
-| Req/Sec | 6297 | 5458 | 14 |
-| Bytes/Sec | 1.03 | 1.69 | 2.39 |
-| Total Requests | 69K | 60K | 0K |
-| Errors count | 0 | 60034 | 0 |
-
-### Get random by ID (partial document)
+### Get random by ID (full document 100 fields)
 
 #### 10 connections over 30 seconds
 | Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
 | --- | --- | --- | --- |
-| Latency | 2ms | 6ms | 3ms |
-| Req/Sec | 3939 | 4989 | 5601 |
-| Bytes/Sec | 2.63 | 3.34 | 1.74 |
-| Total Requests | 118K | 150K | 168K |
-| Errors count | 0 | 0 | 168022 |
+| Latency | 2ms | 2ms | 8ms |
+| Req/Sec | 3807 | 4888 | 1191 |
+| Bytes/Sec | 7.57 | 9.57 | 2.31 |
+| Total Requests | 114K | 147K | 36K |
+| Errors count | 0 | 0 | 0 |
 
 #### 50 connections over 20 seconds
 | Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
 | --- | --- | --- | --- |
-| Latency | 8ms | 7ms | 6ms |
-| Req/Sec | 5618 | 6390 | 7182 |
-| Bytes/Sec | 3.76 | 4.27 | 2.23 |
-| Total Requests | 112K | 128K | 144K |
-| Errors count | 0 | 0 | 143640 |
+| Latency | 9ms | 7ms | 59ms |
+| Req/Sec | 5293 | 6297 | 844 |
+| Bytes/Sec | 10.53 | 12.33 | 1.64 |
+| Total Requests | 106K | 126K | 17K |
+| Errors count | 0 | 0 | 0 |
 
 #### 100 connections over 10 seconds
 | Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
 | --- | --- | --- | --- |
-| Latency | 17ms | 15ms | 13ms |
-| Req/Sec | 5642 | 6512 | 7313 |
-| Bytes/Sec | 3.77 | 4.35 | 2.27 |
-| Total Requests | 62K | 65K | 80K |
-| Errors count | 0 | 0 | 80434 |
+| Latency | 19ms | 15ms | 134ms |
+| Req/Sec | 5250 | 6346 | 739 |
+| Bytes/Sec | 10.45 | 12.43 | 1.43 |
+| Total Requests | 53K | 70K | 7K |
+| Errors count | 0 | 0 | 0 |
+
+### Get random by ID (bulk 100 documents)
+
+#### 10 connections over 30 seconds
+| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 2ms | 35ms | 1s |
+| Req/Sec | 4373 | 280 | 12 |
+| Bytes/Sec | 0.72 | 50.23 | 2.07 |
+| Total Requests | 131K | 8K | 0K |
+| Errors count | 0 | 0 | 0 |
+
+#### 50 connections over 20 seconds
+| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 8ms | 168ms | 2.4s |
+| Req/Sec | 6250 | 296 | 20 |
+| Bytes/Sec | 1.03 | 53.07 | 3.48 |
+| Total Requests | 125K | 6K | 0K |
+| Errors count | 0 | 0 | 0 |
+
+#### 100 connections over 10 seconds
+| Stat | MongoDB 🏆 | MySQL JSON | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 15ms | 41ms | 4.6s |
+| Req/Sec | 6279 | 2406 | 17 |
+| Bytes/Sec | 1.03 | 36.83 | 2.98 |
+| Total Requests | 63K | 24K | 0K |
+| Errors count | 0 | 22054 | 0 |
+
+### Get random by ID (partial document 10 fields)
+
+#### 10 connections over 30 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 5ms | 2ms | 2ms |
+| Req/Sec | 3979 | 4948 | 4275 |
+| Bytes/Sec | 2.66 | 3.31 | 2.85 |
+| Total Requests | 119K | 148K | 128K |
+| Errors count | 0 | 0 | 0 |
+
+#### 50 connections over 20 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 8ms | 7ms | 9ms |
+| Req/Sec | 5606 | 6410 | 5383 |
+| Bytes/Sec | 3.75 | 4.29 | 3.59 |
+| Total Requests | 112K | 128K | 108K |
+| Errors count | 0 | 0 | 0 |
+
+#### 100 connections over 10 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | MySQL EAV | 
+| --- | --- | --- | --- |
+| Latency | 17ms | 15ms | 18ms |
+| Req/Sec | 5707 | 6443 | 5501 |
+| Bytes/Sec | 3.81 | 4.31 | 3.67 |
+| Total Requests | 57K | 64K | 55K |
+| Errors count | 0 | 0 | 0 |
 
 <!-- tablestop -->

@@ -12,11 +12,11 @@ const SUBJECT_NAMES = {
 };
 
 const BENCHMARK_NAMES = {
-    'get-random-by-id': 'Get random by ID (full document)',
-    'get-random-by-id-obj-part': 'Get random by ID (partial document)',
-    'get-random-by-id-bulk': 'Get random by ID (bulk)',
+    'get-random-by-id': 'Get random by ID (full document 100 fields)',
+    'get-random-by-id-obj-part': 'Get random by ID (partial document 10 fields)',
+    'get-random-by-id-bulk': 'Get random by ID (bulk 100 documents)',
     'get-random-by-id-bulk-obj-part':
-        'Get random by ID (bulk, partial document)',
+        'Get random by ID (bulk 100 documents, partial document 10 fields)',
 };
 
 const BENCHMARK_TYPES = ['balanced', 'high', 'spike'];
