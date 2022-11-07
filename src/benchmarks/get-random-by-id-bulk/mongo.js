@@ -12,7 +12,9 @@ runApp(async (app) => {
         );
 
         const cursor = collection.find({
-            product_id: productIds,
+            product_id: {
+                $in: productIds,
+            },
         });
 
         return cursor.toArray();

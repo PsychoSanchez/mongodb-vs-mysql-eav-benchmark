@@ -13,7 +13,8 @@ const SUBJECT_NAMES = {
 
 const BENCHMARK_NAMES = {
     'get-random-by-id': 'Get random by ID (full document 100 fields)',
-    'get-random-by-id-obj-part': 'Get random by ID (partial document 10 fields)',
+    'get-random-by-id-obj-part':
+        'Get random by ID (partial document 10 fields)',
     'get-random-by-id-bulk': 'Get random by ID (bulk 100 documents)',
     'get-random-by-id-bulk-obj-part':
         'Get random by ID (bulk 100 documents, partial document 10 fields)',
@@ -27,6 +28,12 @@ const BENCHMARK_TYPE_TO_TITLE = {
     spike: '100 connections over 10 seconds',
 };
 
+const BRONZE_MEDAL = '🥉';
+const SILVER_MEDAL = '🥈';
+const GOLD_MEDAL = '🥇';
+
+const MEDALS = [GOLD_MEDAL, SILVER_MEDAL, BRONZE_MEDAL];
+
 /**
  * @param {{ bootstrap: { [s: string]: any; } | ArrayLike<any>; }} results
  */
@@ -34,14 +41,15 @@ async function renderBootstrapTable(results) {
     const prettyMs = (await import('pretty-ms')).default;
 
     const subjectBootstraps = Object.entries(results.bootstrap);
-    const winnerName = subjectBootstraps
+    const subjectCups = subjectBootstraps
         .slice(0)
         .sort(
             (
                 /** @type {[string, any]} */ [, a],
                 /** @type {[string, any]} */ [, b]
             ) => a.time - b.time
-        )[0][0];
+        )
+        .map(([name], index) => [name, MEDALS[index]]);
 
     const rows = subjectBootstraps
         .map(([name, result]) => {
@@ -49,8 +57,8 @@ async function renderBootstrapTable(results) {
             const subjectName = SUBJECT_NAMES[name];
 
             return `| ${subjectName}${
-                winnerName === name ? ' 🏆' : ''
-            } | ${prettyMs(result.time)} |`;
+                subjectCups.find(([subject]) => subject === name)?.[1] ?? ''
+            } | ${prettyMs(result.time ?? 0)} |`;
         })
         .join('\n');
 
@@ -93,7 +101,7 @@ async function renderBenchmarks(result) {
 async function renderBenchmark(benchmark, type) {
     const subjects = Object.entries(benchmark);
 
-    const winnerSubject = subjects
+    const subjectsCups = subjects
         .slice(0)
         .filter(([, subject]) => subject[type][0].non2xx === 0)
         .sort(
@@ -101,7 +109,8 @@ async function renderBenchmark(benchmark, type) {
                 /** @type {[string, any]} */ [, a],
                 /** @type {[string, any]} */ [, b]
             ) => b[type][0].requests.average - a[type][0].requests.average
-        )[0][0];
+        )
+        .map(([name], index) => [name, MEDALS[index]]);
 
     const result = `
 #### ${
@@ -112,7 +121,8 @@ async function renderBenchmark(benchmark, type) {
         .map(
             ([name]) =>
                 // @ts-ignore
-                SUBJECT_NAMES[name] + (winnerSubject === name ? ' 🏆' : '')
+                SUBJECT_NAMES[name] +
+                (subjectsCups.find(([subject]) => subject === name)?.[1] ?? '')
         )
         .join(' | ')} | 
 | --- | ${subjects.map(() => '---').join(' | ')} |`;
@@ -191,8 +201,10 @@ async function renderTotalRequests(values) {
  * @param {any[]} values
  */
 async function renderErrors(values) {
-    const entries = values.map((value) => `${value}`).join(' | ');
-    return `| Errors count | ${entries} |`;
+    const entries = values
+        .map((value) => `${value === 0 ? '-' : `❌ ${value}`}`)
+        .join(' | ');
+    return `| Server errors | ${entries} |`;
 }
 
 async function renderReadme() {
