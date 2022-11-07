@@ -17,6 +17,12 @@ runApp(async (app) => {
             },
         });
 
-        return cursor.toArray();
+        const products = await cursor.toArray();
+
+        if (!products.length) {
+            throw new Error('not found');
+        }
+
+        return products;
     });
 });

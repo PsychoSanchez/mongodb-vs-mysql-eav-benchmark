@@ -26,9 +26,9 @@ Test runs autoncannon requests from 100 connections over 30 seconds on a 2022 Ma
 | Subject | Time |
 | --- | --- |
 | MongoDB🥇 | 21.7s |
-| MySQL JSON🥈 | 24.8s |
-| MySQL EAV | 3m 1.5s |
-| PostgreSQL JSONB🥉 | 25.7s |
+| MySQL JSON🥈 | 24.3s |
+| MySQL EAV | 2m 57.8s |
+| PostgreSQL JSONB🥉 | 25.6s |
 
 
 ### Benchmarks
@@ -124,5 +124,34 @@ Test runs autoncannon requests from 100 connections over 30 seconds on a 2022 Ma
 | Bytes/Sec | 3.81 | 4.31 | 3.67 | 4.35 |
 | Total Requests | 57K | 64K | 55K | 65K |
 | Server errors | - | - | - | - |
+
+### Get random by ID (bulk 100 documents, partial document 10 fields)
+
+#### 10 connections over 30 seconds
+| Stat | MongoDB🥉 | MySQL JSON🥈 | MySQL EAV | PostgreSQL JSONB🥇 | 
+| --- | --- | --- | --- | --- |
+| Latency | 53ms | 24ms | 133ms | 23ms |
+| Req/Sec | 188 | 403 | 75 | 432 |
+| Bytes/Sec | 9.52 | 20.46 | 3.79 | 21.89 |
+| Total Requests | 6K | 12K | 2K | 13K |
+| Server errors | - | - | - | - |
+
+#### 50 connections over 20 seconds
+| Stat | MongoDB🥈 | MySQL JSON | MySQL EAV🥉 | PostgreSQL JSONB🥇 | 
+| --- | --- | --- | --- | --- |
+| Latency | 262ms | 14ms | 516ms | 118ms |
+| Req/Sec | 190 | 3544 | 96 | 421 |
+| Bytes/Sec | 9.61 | 12.03 | 4.84 | 21.38 |
+| Total Requests | 4K | 71K | 2K | 8K |
+| Server errors | - | ❌ 66611 | - | - |
+
+#### 100 connections over 10 seconds
+| Stat | MongoDB🥈 | MySQL JSON | MySQL EAV🥉 | PostgreSQL JSONB🥇 | 
+| --- | --- | --- | --- | --- |
+| Latency | 523ms | 14ms | 877ms | 233ms |
+| Req/Sec | 187 | 7072 | 109 | 424 |
+| Bytes/Sec | 9.46 | 2.55 | 5.49 | 21.52 |
+| Total Requests | 2K | 71K | 1K | 4K |
+| Server errors | - | ❌ 70707 | - | - |
 
 <!-- tablestop -->
