@@ -32,6 +32,10 @@ import('inquirer').then(async (inquirer) => {
                         await runBenchmark(benchmark, testSubject);
                     }
                 }
+
+                console.log('🎉 Done!');
+
+                process.exit(0);
             }
         );
 });

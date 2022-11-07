@@ -12,36 +12,39 @@ runApp(async (app) => {
         );
 
         const [rows] = await connection.execute(
-            `
-            SELECT * FROM entity_attribute_value WHERE entity_id IN (?);`,
-            [productIds]
+            `SELECT * FROM entity_attribute_value WHERE entity_id IN (${productIds.join(
+                ','
+            )});`,
+            []
         );
 
-        // @ts-ignore
-        return rows.reduce((acc, row) => {
-            const {
-                entity_id,
-                attribute_id,
-                value_boolean,
-                value_int,
-                value_float,
-                value_bigint_unsigned,
-                value_timestamp,
-                value_string,
-                value_text,
-            } = row;
+        return Object.values(
+            // @ts-ignore
+            rows.reduce((acc, row) => {
+                const {
+                    entity_id,
+                    attribute_id,
+                    value_boolean,
+                    value_int,
+                    value_float,
+                    value_bigint_unsigned,
+                    value_timestamp,
+                    value_string,
+                    value_text,
+                } = row;
 
-            acc[entity_id] = acc[entity_id] || {};
-            acc[entity_id][attribute_id] =
-                value_boolean ||
-                value_int ||
-                value_float ||
-                value_bigint_unsigned ||
-                value_timestamp ||
-                value_string ||
-                value_text;
+                acc[entity_id] = acc[entity_id] || {};
+                acc[entity_id][attribute_id] =
+                    value_boolean ||
+                    value_int ||
+                    value_float ||
+                    value_bigint_unsigned ||
+                    value_timestamp ||
+                    value_string ||
+                    value_text;
 
-            return acc;
-        }, {});
+                return acc;
+            }, {})
+        );
     });
 });

@@ -14,6 +14,9 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        // wait for 10 seconds to allow the database to start
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+
         await client.connect();
 
         const database = client.db('product');

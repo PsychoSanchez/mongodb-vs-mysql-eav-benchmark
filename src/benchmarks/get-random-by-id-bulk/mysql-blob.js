@@ -13,8 +13,10 @@ runApp(async (app) => {
 
         const [rows] = await connection.execute(
             `
-            SELECT * FROM entity_attribute_value WHERE entity_id IN (?);`,
-            [productIds]
+            SELECT * FROM entity_attribute_value WHERE entity_id IN (${productIds.join(
+                ','
+            )});`,
+            []
         );
 
         // @ts-ignore

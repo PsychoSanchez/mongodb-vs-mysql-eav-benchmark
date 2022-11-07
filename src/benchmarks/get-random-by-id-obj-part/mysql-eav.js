@@ -1,4 +1,5 @@
 const {faker} = require('@faker-js/faker');
+const {escape} = require('mysql2/promise');
 
 const {getPool} = require('../../clients/mysql');
 const {runApp} = require('../../core/app');
@@ -8,9 +9,9 @@ runApp(async (app) => {
     const connection = await getPool(3308);
 
     const query = `
-        SELECT ${FIELDS.join(
-            ', '
-        )} FROM entity_attribute_value WHERE entity_id = ?;
+        SELECT * FROM entity_attribute_value WHERE entity_id = ? AND attribute_id IN (${FIELDS.map(
+            (field) => escape(field)
+        ).join(', ')});
     `;
 
     app.get('/benchmark', async (request, reply) => {

@@ -27,94 +27,6 @@ const BENCHMARK_TYPE_TO_TITLE = {
     spike: '100 connections over 10 seconds',
 };
 
-// Run all benchmarks
-// Prepare results
-// Run template generator
-
-// /**
-//  * @param {any[]} results
-//  * @param {string | number} stat
-//  * @param {number} value
-//  */
-// function isLowest(results, stat, value) {
-//     return (
-//         Math.min(
-//             ...results.map(
-//                 (/** @type {{ [x: string]: any; }} */ result) => result[stat]
-//             )
-//         ) === value
-//     );
-// }
-
-// /**
-//  * @param {any[]} results
-//  * @param {string | number} stat
-//  * @param {number} value
-//  */
-// function isBiggest(results, stat, value) {
-//     return (
-//         Math.max(
-//             ...results.map(
-//                 (/** @type {{ [x: string]: any; }} */ result) => result[stat]
-//             )
-//         ) === value
-//     );
-// }
-
-// const TROPHY_CONDITION_MAP = {
-//     latency: isLowest,
-//     throughput: isBiggest,
-//     requests: isBiggest,
-//     rps: isBiggest,
-//     errors: isLowest,
-// };
-
-// const SUFFIX_MAP = {
-//     latency: 'ms',
-//     throughput: ' MB',
-//     requests: 'K',
-//     rps: '',
-// };
-
-// const TRANSFORM_MAP = {
-//     latency: (/** @type {number} */ value) => value.toFixed(2),
-//     throughput: (/** @type {number} */ value) =>
-//         (value / 1024 / 1024).toFixed(2),
-//     requests: (/** @type {number} */ value) => (value / 1000).toFixed(0),
-//     rps: (/** @type {number} */ value) => value.toFixed(0),
-// };
-/**
- * @param {any[]} results
- */
-// function renderResultsTable(results) {
-//     const renderRow = (/** @type {string} */ stat) => {
-//         const trophyCondition = TROPHY_CONDITION_MAP[stat];
-
-//         return results
-//             .map((/** @type {{ [x: string]: any; }} */ result) => {
-//                 const value = result[stat];
-//                 const trophy = trophyCondition(results, stat, value)
-//                     ? '🏆 '
-//                     : '';
-//                 const suffix = SUFFIX_MAP[stat] || '';
-//                 const transformedValue = TRANSFORM_MAP[stat](value);
-
-//                 return `${trophy}${transformedValue}${suffix}`;
-//             })
-//             .join(' | ');
-//     };
-
-//     return `
-// | Stat | ${results
-//         .map((/** @type {{ name: any; }} */ bench) => bench.name)
-//         .join(' | ')} |
-// | --- | ${results.map(() => '---').join(' | ')} |
-// | Latency | ${renderRow('latency')} |
-// | Req/Sec | ${renderRow('rps')} |
-// | Bytes/Sec | ${renderRow('throughput')} |
-// | Total Requests | ${renderRow('requests')} |`;
-// }
-
 /**
  * @param {{ bootstrap: { [s: string]: any; } | ArrayLike<any>; }} results
  */
@@ -122,12 +34,14 @@ async function renderBootstrapTable(results) {
     const prettyMs = (await import('pretty-ms')).default;
 
     const subjectBootstraps = Object.entries(results.bootstrap);
-    const winnerName = subjectBootstraps.sort(
-        (
-            /** @type {[string, any]} */ [, a],
-            /** @type {[string, any]} */ [, b]
-        ) => a.time - b.time
-    )[0][0];
+    const winnerName = subjectBootstraps
+        .slice(0)
+        .sort(
+            (
+                /** @type {[string, any]} */ [, a],
+                /** @type {[string, any]} */ [, b]
+            ) => a.time - b.time
+        )[0][0];
 
     const rows = subjectBootstraps
         .map(([name, result]) => {
@@ -156,10 +70,8 @@ async function renderBenchmarks(result) {
     let renderStr = `## Benchmarks\n\n`;
 
     for (const [benchmarkName, benchmark] of Object.entries(benchmarks)) {
-        console.log(benchmarkName);
         // @ts-ignore
         const benchmarkTitle = BENCHMARK_NAMES[benchmarkName];
-        console.log(benchmarkTitle);
 
         renderStr += `\n\n### ${benchmarkTitle ?? benchmarkName}`;
 
@@ -183,6 +95,7 @@ async function renderBenchmark(benchmark, type) {
 
     const winnerSubject = subjects
         .slice(0)
+        .filter(([, subject]) => subject[type][0].non2xx === 0)
         .sort(
             (
                 /** @type {[string, any]} */ [, a],
@@ -220,11 +133,16 @@ async function renderBenchmark(benchmark, type) {
         subjects.map(([, result]) => result[type][0].requests.total)
     );
 
+    const errors = await renderErrors(
+        subjects.map(([, result]) => result[type][0].non2xx)
+    );
+
     return `${result}
 ${latency}
 ${rps}
 ${throughput}
-${requests}`;
+${requests}
+${errors}`;
 }
 
 /**
@@ -267,6 +185,14 @@ async function renderTotalRequests(values) {
         .join(' | ');
 
     return `| Total Requests | ${entries} |`;
+}
+
+/**
+ * @param {any[]} values
+ */
+async function renderErrors(values) {
+    const entries = values.map((value) => `${value}`).join(' | ');
+    return `| Errors count | ${entries} |`;
 }
 
 async function renderReadme() {
