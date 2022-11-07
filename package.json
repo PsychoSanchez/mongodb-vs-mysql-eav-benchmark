@@ -35,6 +35,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.10.0",
     "mysql2": "^2.3.3",
+    "pg": "^8.8.0",
     "sequelize": "^6.25.1"
   },
   "dependencies": {

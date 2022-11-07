@@ -9,6 +9,7 @@ const SUBJECT_NAMES = {
     mongo: 'MongoDB',
     ['mysql-eav']: 'MySQL EAV',
     ['mysql-blob']: 'MySQL JSON',
+    ['postgresql-blob']: 'PostgreSQL JSONB',
 };
 
 const BENCHMARK_NAMES = {
@@ -54,7 +55,7 @@ async function renderBootstrapTable(results) {
     const rows = subjectBootstraps
         .map(([name, result]) => {
             // @ts-ignore
-            const subjectName = SUBJECT_NAMES[name];
+            const subjectName = SUBJECT_NAMES[name] ?? name;
 
             return `| ${subjectName}${
                 subjectCups.find(([subject]) => subject === name)?.[1] ?? ''
