@@ -1,0 +1,31 @@
+# MongoDB vs MySQL EAV benchmark
+
+This is a benchmark of MongoDB vs MySQL for EAV (Entity-Attribute-Value) data model. 
+
+It tests bulk insert operations and get by entity id queries for 100000 entities with 100 attributes each.
+
+Both MongoDB and MySQL are running in Docker containers, gateway is a Node.js app running fastify.
+
+Test runs autoncannon requests from 100 connections over 30 seconds on a 2022 Macbook Pro M1 with 32GB RAM.
+
+## Setup
+
+Install docker and docker-compose.
+
+-   Install nodejs dependencies: `nvm use && npm install`
+-   Start benchmark `npm start`
+-   Select benchmarks to run via interactive shell
+-   Update README.md with results by running `npm run update-readme`
+
+## Results
+
+### Database initialization with 100000 entities and 100 attributes each using bulk insert
+
+<%= bootstrap %>
+
+### Benchmarks
+<!-- table -->
+
+<%= benchmarks %>
+
+<!-- tablestop -->

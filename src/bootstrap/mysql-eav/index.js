@@ -1,4 +1,4 @@
-const { createDataset } = require('./index.js');
+const {createDataset} = require('../../dataset/index.js');
 const lodash = require('lodash');
 const sequelize = require('sequelize');
 
@@ -48,7 +48,7 @@ function productToRow(product) {
             value_timestamp: null,
             value_string: null,
             value_text: null,
-            [`value_${type}`]: value
+            [`value_${type}`]: value,
         };
     });
 }
@@ -56,58 +56,66 @@ function productToRow(product) {
 const sequelizeClient = new sequelize.Sequelize('product', 'admin', 'admin', {
     host: 'localhost',
     dialect: 'mysql',
+    port: 3308,
     logging: false,
     pool: {
         max: 20,
         min: 0,
         acquire: 30000,
-        idle: 10000
-    }
+        idle: 10000,
+    },
 });
 
-const Product = sequelizeClient.define('entity_attribute_value', {
-    id: {
-        type: sequelize.DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+const Product = sequelizeClient.define(
+    'entity_attribute_value',
+    {
+        id: {
+            type: sequelize.DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        entity_id: {
+            type: sequelize.DataTypes.INTEGER,
+        },
+        attribute_id: {
+            type: sequelize.DataTypes.STRING,
+        },
+        type: {
+            type: sequelize.DataTypes.STRING,
+        },
+        value_boolean: {
+            type: sequelize.DataTypes.BOOLEAN,
+        },
+        value_int: {
+            type: sequelize.DataTypes.INTEGER,
+        },
+        value_float: {
+            type: sequelize.DataTypes.FLOAT,
+        },
+        value_bigint_unsigned: {
+            type: sequelize.DataTypes.BIGINT,
+        },
+        value_timestamp: {
+            type: sequelize.DataTypes.DATE,
+        },
+        value_string: {
+            type: sequelize.DataTypes.STRING,
+        },
+        value_text: {
+            type: sequelize.DataTypes.TEXT,
+        },
     },
-    entity_id: {
-        type: sequelize.DataTypes.INTEGER,
-    },
-    attribute_id: {
-        type: sequelize.DataTypes.STRING,
-    },
-    type: {
-        type: sequelize.DataTypes.STRING,
-    },
-    value_boolean: {
-        type: sequelize.DataTypes.BOOLEAN,
-    },
-    value_int: {
-        type: sequelize.DataTypes.INTEGER,
-    },
-    value_float: {
-        type: sequelize.DataTypes.FLOAT,
-    },
-    value_bigint_unsigned: {
-        type: sequelize.DataTypes.BIGINT,
-    },
-    value_timestamp: {
-        type: sequelize.DataTypes.DATE,
-    },
-    value_string: {
-        type: sequelize.DataTypes.STRING,
-    },
-    value_text: {
-        type: sequelize.DataTypes.TEXT,
-    },
-}, {
-    timestamps: false,
-    freezeTableName: true,
-    tableName: 'entity_attribute_value',
-});
+    {
+        timestamps: false,
+        freezeTableName: true,
+        tableName: 'entity_attribute_value',
+    }
+);
 
 async function run() {
+    // wait for 10 seconds to allow the database to start
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
     // wait for the database to be ready
     await sequelizeClient.authenticate();
 
@@ -124,6 +132,8 @@ async function run() {
         console.log(`Inserted ${id} products`);
     }
     console.log(`Inserted ${id} products in ${Date.now() - time}ms`);
+
+    return Date.now() - time;
 }
 
-run().catch(console.dir);
+module.exports = run;

@@ -4,18 +4,8 @@
   "description": "MongoDb vs mysql-eav Entity Attribute Value table model benchmark",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "stop:mongo": "docker-compose -f ./mongo/docker-compose.yaml down",
-    "start:mongo": "docker-compose -f ./mongo/docker-compose.yaml up -d",
-    "init:mongo": "node ./dataset/mongo-bootstrap.js",
-    "stop:mysql-eav": "docker-compose -f ./mysql-eav/docker-compose.yaml down",
-    "start:mysql-eav": "docker-compose -f ./mysql-eav/docker-compose.yaml up -d",
-    "init:mysql-eav": "node ./dataset/mysql-eav-bootstrap.js",
-    "stop:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml down",
-    "start:mysql-blob": "docker-compose -f ./mysql-blob/docker-compose.yaml up -d",
-    "init:mysql-blob": "node ./dataset/mysql-blob-bootstrap.js",
-    "stop:all": "npm run stop:mysql-eav && npm run stop:mongo && npm run stop:mysql-blob",
-    "benchmark": "node ./benchmark.js"
+    "start": "node ./src/index.js",
+    "update-readme": "node ./src/template/index.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +24,7 @@
     "@faker-js/faker": "^7.6.0",
     "@types/autocannon": "^7.9.0",
     "@types/ejs": "^3.1.1",
+    "@types/inquirer": "^9.0.2",
     "@types/lodash": "^4.14.186",
     "@types/mysql": "^2.15.21",
     "autocannon": "^7.10.0",
@@ -45,5 +36,9 @@
     "mongodb": "^4.10.0",
     "mysql2": "^2.3.3",
     "sequelize": "^6.25.1"
+  },
+  "dependencies": {
+    "inquirer": "^9.1.4",
+    "pretty-ms": "^8.0.0"
   }
 }

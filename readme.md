@@ -12,62 +12,80 @@ Test runs autoncannon requests from 100 connections over 30 seconds on a 2022 Ma
 
 Install docker and docker-compose.
 
-- Install nodejs dependencies: `nvm use && npm install`
-- Drop projects docker containers `npm run stop:all`
-- Start selected container `npm run start:mongo` or `npm run start:mysql`
-- Initialize database `npm run init:mongo` or `npm run init:mysql`
-
-## Run benchmark
-
-- Run benchmark `npm run benchmark mongo` or `npm run benchmark mysql`
+-   Install nodejs dependencies: `nvm use && npm install`
+-   Start benchmark `npm start`
+-   Select benchmarks to run via interactive shell
+-   Update README.md with results by running `npm run update-readme`
 
 ## Results
 
 ### Database initialization with 100000 entities and 100 attributes each using bulk insert
 
-| Database | Time |
-| -------- | ---- |
-| MongoDB  | 21.4s |
-| MySQL  EAV   | 183.4s |
-| MySQL JSON  | 25.3s |
 
+| Subject | Time |
+| --- | --- |
+| MongoDB 🏆 | 21.9s |
+| MySQL JSON | 24.3s |
+| MySQL EAV | 3m 0.2s |
+
+
+### Benchmarks
 <!-- table -->
 
-### 10 connections over 30 seconds (Balanced load)
+## Benchmarks
 
-| Stat | MongoDB | MySQL EAV | MySQL JSON |
+
+
+### Get random by ID (full document)
+
+#### 10 connections over 30 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | 
+| --- | --- | --- |
+| Latency | 2ms | 2ms |
+| Req/Sec | 3772 | 4952 |
+| Bytes/Sec | 7.51 | 9.69 |
+| Total Requests | 113K | 149K |
+
+#### 50 connections over 20 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | 
+| --- | --- | --- |
+| Latency | 9ms | 8ms |
+| Req/Sec | 5479 | 6236 |
+| Bytes/Sec | 10.91 | 12.21 |
+| Total Requests | 110K | 125K |
+
+#### 100 connections over 10 seconds
+| Stat | MongoDB | MySQL JSON 🏆 | 
+| --- | --- | --- |
+| Latency | 18ms | 15ms |
+| Req/Sec | 5388 | 6270 |
+| Bytes/Sec | 10.73 | 12.27 |
+| Total Requests | 54K | 69K |
+
+### Get random by ID (partial document)
+
+#### 10 connections over 30 seconds
+| Stat | MongoDB | MySQL JSON | MySQL EAV 🏆 | 
 | --- | --- | --- | --- |
-| Latency | 2.05ms | 7.07ms | 🏆 1.44ms |
-| Req/Sec | 3965 | 1321 | 🏆 5186 |
-| Bytes/Sec | 7.89 MB | 2.56 MB | 🏆 10.15 MB |
-| Total Requests | 119K | 40K | 🏆 156K |
+| Latency | 2ms | 2ms | 1ms |
+| Req/Sec | 3847 | 4960 | 5502 |
+| Bytes/Sec | 2.57 | 3.32 | 1.71 |
+| Total Requests | 115K | 149K | 165K |
 
-### 50 connections over 20 seconds (High load)
-
-| Stat | MongoDB | MySQL EAV | MySQL JSON |
+#### 50 connections over 20 seconds
+| Stat | MongoDB | MySQL JSON | MySQL EAV 🏆 | 
 | --- | --- | --- | --- |
-| Latency | 8.67ms | 58.03ms | 🏆 7.08ms |
-| Req/Sec | 5455 | 853 | 🏆 6601 |
-| Bytes/Sec | 10.86 MB | 1.65 MB | 🏆 12.92 MB |
-| Total Requests | 109K | 17K | 🏆 132K |
+| Latency | 8ms | 7ms | 6ms |
+| Req/Sec | 5622 | 6434 | 7246 |
+| Bytes/Sec | 3.76 | 4.30 | 2.25 |
+| Total Requests | 112K | 129K | 145K |
 
-### 100 connections over 10 seconds (Spike load)
-
-| Stat | MongoDB | MySQL EAV | MySQL JSON |
+#### 100 connections over 10 seconds
+| Stat | MongoDB | MySQL JSON | MySQL EAV 🏆 | 
 | --- | --- | --- | --- |
-| Latency | 17.59ms | 122.54ms | 🏆 14.89ms |
-| Req/Sec | 5531 | 809 | 🏆 6499 |
-| Bytes/Sec | 11.01 MB | 1.57 MB | 🏆 12.72 MB |
-| Total Requests | 55K | 8K | 🏆 65K |
+| Latency | 17ms | 15ms | 14ms |
+| Req/Sec | 5570 | 6468 | 7107 |
+| Bytes/Sec | 3.72 | 4.33 | 2.20 |
+| Total Requests | 56K | 65K | 71K |
 
 <!-- tablestop -->
-
-# Conclusion
-
-## Bulk insert operations
-
-MongoDb is `9.1` times faster on average in this test case than MySQL.
-
-## Single random read operations
-
-MongoDb has `2-7` times less latency and more throughput.

@@ -1,7 +1,6 @@
-const { createDataset } = require('./index.js');
+const {createDataset} = require('../../dataset/index.js');
 const lodash = require('lodash');
 const sequelize = require('sequelize');
-
 
 const sequelizeClient = new sequelize.Sequelize('product', 'admin', 'admin', {
     host: 'localhost',
@@ -12,28 +11,31 @@ const sequelizeClient = new sequelize.Sequelize('product', 'admin', 'admin', {
         max: 20,
         min: 0,
         acquire: 30000,
-        idle: 10000
+        idle: 10000,
+    },
+});
+
+const Product = sequelizeClient.define(
+    'entity_attribute_value',
+    {
+        id: {
+            type: sequelize.DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        entity_id: {
+            type: sequelize.DataTypes.INTEGER,
+        },
+        value: {
+            type: sequelize.DataTypes.JSON,
+        },
+    },
+    {
+        timestamps: false,
+        freezeTableName: true,
+        tableName: 'entity_attribute_value',
     }
-});
-
-const Product = sequelizeClient.define('entity_attribute_value', {
-    id: {
-        type: sequelize.DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    entity_id: {
-        type: sequelize.DataTypes.INTEGER,
-    },
-    value: {
-        type: sequelize.DataTypes.JSON,
-    },
-}, {
-    timestamps: false,
-    freezeTableName: true,
-    tableName: 'entity_attribute_value',
-});
-
+);
 
 /**
  * @param {{ product_id: any; }} product
@@ -41,11 +43,14 @@ const Product = sequelizeClient.define('entity_attribute_value', {
 function productToRow(product) {
     return {
         entity_id: product.product_id,
-        value: product
-    }    
+        value: product,
+    };
 }
 
 async function run() {
+    // wait for 10 seconds to allow the database to start
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
     // wait for the database to be ready
     await sequelizeClient.authenticate();
 
@@ -62,6 +67,8 @@ async function run() {
         console.log(`Inserted ${id} products`);
     }
     console.log(`Inserted ${id} products in ${Date.now() - time}ms`);
+
+    return Date.now() - time;
 }
 
-run().catch(console.dir);
+module.exports = run;
