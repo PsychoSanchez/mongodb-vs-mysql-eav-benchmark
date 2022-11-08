@@ -7,6 +7,13 @@ const {FIELDS} = require('./constants');
 runApp(async (app) => {
     const collection = await getCollection();
 
+    const projection = FIELDS.reduce((acc, field) => {
+        // @ts-ignore
+        acc[field] = 1;
+
+        return acc;
+    }, {});
+
     app.get('/benchmark', async (request, reply) => {
         const productId = faker.datatype.number({min: 1, max: 100000});
 
@@ -15,15 +22,11 @@ runApp(async (app) => {
                 product_id: productId,
             },
             {
+                projection,
                 limit: 1,
             }
         );
 
-        return FIELDS.reduce((acc, field) => {
-            // @ts-ignore
-            acc[field] = product[field];
-
-            return acc;
-        }, {});
+        return product;
     });
 });

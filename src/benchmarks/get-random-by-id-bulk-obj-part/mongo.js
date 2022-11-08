@@ -8,24 +8,32 @@ const {FIELDS} = require('./constants');
 runApp(async (app) => {
     const collection = await getCollection();
 
+    const projection = FIELDS.reduce(
+        (acc, field) => {
+            // @ts-ignore
+            acc[field] = 1;
+
+            return acc;
+        },
+        {}
+    );
+
     app.get('/benchmark', async (request, reply) => {
         const productIds = Array.from({length: 100}, () =>
             faker.datatype.number({min: 1, max: 100000})
         );
 
-        const cursor = collection.find({
-            product_id: {
-                $in: productIds,
+        const cursor = collection.find(
+            {
+                product_id: {
+                    $in: productIds,
+                },
             },
-        });
+            {
+                projection,
+            }
+        );
 
-        return (await cursor.toArray()).map((product) => {
-            return FIELDS.reduce((acc, field) => {
-                // @ts-ignore
-                acc[field] = product[field];
-
-                return acc;
-            }, {});
-        });
+        return await cursor.toArray();
     });
 });
